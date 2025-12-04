@@ -18,17 +18,29 @@ const server = http.createServer(app);
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
-  'https://meet-clone-frontend.vercel.app',
-  'https://frontend-wn9e77au0-demoncommander12-1854s-projects.vercel.app',
+  'https://frontend-jcgdb99eg-demoncommander12-1854s-projects.vercel.app',
   'https://frontend-demoncommander12-1854s-projects.vercel.app',
   'https://meetclone-sk68.onrender.com',
   process.env.CLIENT_URL,
 ].filter(Boolean);
 
+// Also allow any vercel.app subdomain
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  if (allowedOrigins.includes(origin)) return true;
+  if (origin.endsWith('.vercel.app')) return true;
+  return false;
+};
+
 // Socket.IO setup
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: function(origin, callback) {
+      if (isAllowedOrigin(origin)) {
+        return callback(null, true);
+      }
+      return callback(null, true); // Allow all for now
+    },
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -37,12 +49,10 @@ const io = new Server(server, {
 // Middleware
 app.use(cors({
   origin: function(origin, callback) {
-    // Allow requests with no origin (mobile apps, curl, etc.)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
+    if (isAllowedOrigin(origin)) {
       return callback(null, true);
     }
-    return callback(null, true); // Allow all for now, tighten in production
+    return callback(null, true); // Allow all for now
   },
   credentials: true,
 }));
