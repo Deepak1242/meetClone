@@ -18,6 +18,8 @@ const server = http.createServer(app);
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
+  'https://meet-clone-frontend.vercel.app',
+  'https://meetclone-sk68.onrender.com',
   process.env.CLIENT_URL,
 ].filter(Boolean);
 
