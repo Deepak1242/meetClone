@@ -19,6 +19,8 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
   'https://meet-clone-frontend.vercel.app',
+  'https://frontend-wn9e77au0-demoncommander12-1854s-projects.vercel.app',
+  'https://frontend-demoncommander12-1854s-projects.vercel.app',
   'https://meetclone-sk68.onrender.com',
   process.env.CLIENT_URL,
 ].filter(Boolean);
