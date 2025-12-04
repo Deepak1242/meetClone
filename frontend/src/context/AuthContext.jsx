@@ -5,6 +5,8 @@ const AuthContext = createContext(null)
 // API base URL - uses environment variable in production
 const API_URL = import.meta.env.VITE_BACKEND_URL || ''
 
+console.log('API_URL configured as:', API_URL || '(same origin)')
+
 export const useAuth = () => {
   const context = useContext(AuthContext)
   if (!context) {
@@ -39,7 +41,13 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password }),
       })
 
-      const data = await response.json()
+      // Handle empty response
+      const text = await response.text()
+      if (!text) {
+        throw new Error('Empty response from server')
+      }
+      
+      const data = JSON.parse(text)
 
       if (!response.ok) {
         throw new Error(data.message || 'Login failed')
@@ -51,6 +59,7 @@ export const AuthProvider = ({ children }) => {
       setUser(data.user)
       return { success: true }
     } catch (error) {
+      console.error('Login error:', error)
       return { success: false, error: error.message }
     }
   }
@@ -65,7 +74,13 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ name, email, password }),
       })
 
-      const data = await response.json()
+      // Handle empty response
+      const text = await response.text()
+      if (!text) {
+        throw new Error('Empty response from server')
+      }
+      
+      const data = JSON.parse(text)
 
       if (!response.ok) {
         throw new Error(data.message || 'Signup failed')
@@ -77,6 +92,7 @@ export const AuthProvider = ({ children }) => {
       setUser(data.user)
       return { success: true }
     } catch (error) {
+      console.error('Signup error:', error)
       return { success: false, error: error.message }
     }
   }
