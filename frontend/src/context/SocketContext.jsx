@@ -4,6 +4,9 @@ import { useAuth } from './AuthContext'
 
 const SocketContext = createContext(null)
 
+// Backend URL - uses environment variable in production, falls back to same origin in development
+const SOCKET_URL = import.meta.env.VITE_BACKEND_URL || window.location.origin
+
 export const useSocket = () => {
   const context = useContext(SocketContext)
   if (!context) {
@@ -19,7 +22,8 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (isAuthenticated && token) {
-      const newSocket = io(window.location.origin, {
+      console.log('Connecting to socket server:', SOCKET_URL)
+      const newSocket = io(SOCKET_URL, {
         auth: {
           token,
         },
